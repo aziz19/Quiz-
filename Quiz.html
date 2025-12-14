@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Hôtel - Mode Jeu</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .quiz-container {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        max-width: 700px;
+        width: 90%;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        color: #0072ff;
+      }
+
+      .question {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        min-height: 60px;
+      }
+
+      .options {
+        list-style: none;
+        padding: 0;
+      }
+
+      .options li {
+        margin: 10px 0;
+        background: #f0f4f8;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .options li:hover {
+        background: #0072ff;
+        color: #fff;
+        transform: scale(1.05);
+      }
+
+      .options li.correct {
+        background: #28a745;
+        color: #fff;
+        border-color: #28a745;
+      }
+
+      .options li.wrong {
+        background: #dc3545;
+        color: #fff;
+        border-color: #dc3545;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 12px 25px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        background: #0072ff;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+      }
+
+      #score {
+        font-size: 1.3rem;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h1>Quiz Hôtel - Mode Jeu</h1>
+      <div class="question" id="question"></div>
+      <ul class="options" id="options"></ul>
+      <button id="nextBtn" style="display: none">Question Suivante</button>
+      <div id="score"></div>
+    </div>
+
+    <script>
+      const quiz = [
+        {
+          q: "Quel acteur utilise le système de réservation de l’hôtel ?",
+          options: ["Réceptionniste", "Chambre", "Climatisation", "Cuisine"],
+          answer: 0,
+        },
+        {
+          q: "À quoi sert un diagramme de cas d’utilisation ?",
+          options: [
+            "Décrire les interactions entre les acteurs et le système",
+            "Montrer le planning des chambres",
+            "Calculer le prix des séjours",
+            "Créer un site web",
+          ],
+          answer: 0,
+        },
+        {
+          q: "Quel diagramme UML montre les relations entre les objets et leurs attributs ?",
+          options: [
+            "Diagramme de séquence",
+            "Diagramme de classes",
+            "Diagramme d’activité",
+            "Diagramme de cas d’utilisation",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Le diagramme d’activité sert à :",
+          options: [
+            "Décrire le flux d’activités dans le système",
+            "Définir le personnel de l’hôtel",
+            "Faire le budget de l’hôtel",
+            "Montrer la réservation des chambres",
+          ],
+          answer: 0,
+        },
+        {
+          q: "Parmi ces éléments, lequel est un acteur dans le système de l’hôtel ?",
+          options: ["Client", "Clavier", "Coffre-fort", "Chambre"],
+          answer: 0,
+        },
+      ];
+
+      let currentQuestion = 0;
+      let score = 0;
+
+      const questionEl = document.getElementById("question");
+      const optionsEl = document.getElementById("options");
+      const nextBtn = document.getElementById("nextBtn");
+      const scoreEl = document.getElementById("score");
+
+      function showQuestion() {
+        nextBtn.style.display = "none";
+        optionsEl.innerHTML = "";
+        let q = quiz[currentQuestion];
+        questionEl.textContent = q.q;
+        q.options.forEach((opt, index) => {
+          let li = document.createElement("li");
+          li.textContent = opt;
+          li.onclick = () => selectAnswer(li, index);
+          optionsEl.appendChild(li);
+        });
+      }
+
+      function selectAnswer(li, index) {
+        let correctIndex = quiz[currentQuestion].answer;
+        Array.from(optionsEl.children).forEach((el) => (el.onclick = null)); // désactive clic après choix
+        if (index === correctIndex) {
+          li.classList.add("correct");
+          score++;
+        } else {
+          li.classList.add("wrong");
+          optionsEl.children[correctIndex].classList.add("correct");
+        }
+        nextBtn.style.display = "inline-block";
+      }
+
+      nextBtn.onclick = () => {
+        currentQuestion++;
+        if (currentQuestion < quiz.length) {
+          showQuestion();
+        } else {
+          questionEl.style.display = "none";
+          optionsEl.style.display = "none";
+          nextBtn.style.display = "none";
+          scoreEl.textContent = `🎉 Quiz terminé ! Votre score : ${score} / ${quiz.length}`;
+        }
+      };
+
+      showQuestion();
+    </script>
+  </body>
+</html>
